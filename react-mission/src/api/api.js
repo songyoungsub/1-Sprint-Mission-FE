@@ -6,14 +6,14 @@ const instance = axios.create({
   baseURL: "https://product-api-cezx.onrender.com", //백엔드로 만든 api 주소
 });
 
-async function getApi(params = {}) {
+async function getProduct(params = {}) {
   const res = await instance.get("/products", { params });
   return res.data;
 }
 
-async function postApi(surveyData) {
+async function postProduct(surveyData) {
   const res = await instance.post('/products', surveyData)
   return res.data 
 }
 
-export { getApi, postApi }
+export { getProduct, postProduct }

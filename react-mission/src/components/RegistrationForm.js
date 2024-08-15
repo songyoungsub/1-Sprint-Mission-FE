@@ -1,5 +1,5 @@
 import "./RegistrationForm.css";
-import { postApi } from "../api/api";
+import { postProduct } from "../api/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useRegistationBlur from "./hook/useRegistationBlur";
@@ -15,7 +15,9 @@ function RegistrationForm() {
   const [tagArray, setTageArray] = useState([]);
   const [conditionError, inputClassName, handleBlurTrue, handleBlurFalse] =
     useRegistationBlur();
-  const [buttonClass, setButtonClass] = useState("productRegistrationButton noColor");
+  const [buttonClass, setButtonClass] = useState(
+    "productRegistrationButton noColor"
+  );
   const navigate = useNavigate();
 
   // input 값
@@ -76,7 +78,9 @@ function RegistrationForm() {
     // 태그 중복 방지
     const noDuplication = tagArray.find((findTag) => findTag === tag);
 
-    if (e.key === "Enter" && tag !== "" && tag.length <= 5 && !noDuplication) {
+    if (noDuplication) {
+      return;
+    } else if (e.key === "Enter" && tag !== "" && tag.length <= 5) {
       setTageArray((preTagArray) => [...preTagArray, tag]);
       setValues((preValues) => ({
         ...preValues,
@@ -120,7 +124,12 @@ function RegistrationForm() {
 
   // 등록 함수
   const handlePost = async () => {
-    if (buttonClass === "productRegistrationButton activateColor") {
+    if (
+      !conditionError.name &&
+      !conditionError.description &&
+      !conditionError.price &&
+      !conditionError.tage
+    ) {
       let newTags = [];
       if (values.tags !== "") {
         newTags = [...tagArray, values.tags];
@@ -132,7 +141,7 @@ function RegistrationForm() {
         ...values,
         tags: newTags,
       };
-      const res = await postApi(surveyData);
+      const res = await postProduct(surveyData);
 
       setValues({
         name: "",
@@ -240,7 +249,7 @@ function RegistrationForm() {
               <li className="tagBox">
                 {`#${tagText}`}
                 <img
-                className="xImg"
+                  className="xImg"
                   src={tegDeleteImg}
                   alt="X버튼"
                   onClick={handleDeleteTagArray}
